@@ -24,6 +24,9 @@ class NetworkFactoryTest extends AbstractTestCase
             ['litecoinTestnet', Networks\LitecoinTestnet::class],
             ['viacoin', Networks\Viacoin::class],
             ['viacoinTestnet', Networks\ViacoinTestnet::class],
+            ['monacoin', Monacoin::class],
+            ['monacoinTestnet', MonacoinTestnet::class],
+
         ];
     }
 

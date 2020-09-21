@@ -98,6 +98,22 @@ class NetworkFactory
     }
 
     /**
+     * @return Networks\Monacoin
+     */
+    public static function monacoin(): NetworkInterface
+    {
+        return new Networks\Monacoin();
+    }
+
+    /**
+     * @return Networks\MonaecoinTestnet
+     */
+    public static function monacoinTestnet(): NetworkInterface
+    {
+        return new Networks\MonacoinTestnet();
+    }
+
+    /**
      * @return NetworkInterface
      */
     public static function zcash()
