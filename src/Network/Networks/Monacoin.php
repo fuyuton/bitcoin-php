@@ -1,4 +1,7 @@
 <?php
+/**
+ * import from https://github.com/youkchan/monacoin-php/tree/master/src/Network/Networks
+ */
 
 namespace BitWasp\Bitcoin\Network\Networks;
 

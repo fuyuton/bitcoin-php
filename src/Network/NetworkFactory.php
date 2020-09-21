@@ -99,6 +99,24 @@ class NetworkFactory
 
     /**
      * @return NetworkInterface
+     * @throws \Exception
+     */
+    public static function monacoin(): NetworkInterface
+    {
+        return new Networks\Monacoin();
+    }
+
+    /**
+     * @return NetworkInterface
+     * @throws \Exception
+     */
+    public static function monacoinTestnet(): NetworkInterface
+    {
+        return new Networks\MonacoinTestnet();
+    }
+
+    /**
+     * @return NetworkInterface
      */
     public static function zcash()
     {
