@@ -98,8 +98,7 @@ class NetworkFactory
     }
 
     /**
-     * @return NetworkInterface
-     * @throws \Exception
+     * @return Networks\Monacoin
      */
     public static function monacoin(): NetworkInterface
     {
@@ -107,8 +106,7 @@ class NetworkFactory
     }
 
     /**
-     * @return NetworkInterface
-     * @throws \Exception
+     * @return Networks\MonaecoinTestnet
      */
     public static function monacoinTestnet(): NetworkInterface
     {
