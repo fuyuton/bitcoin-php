@@ -142,6 +142,11 @@ class InputSigner implements InputSignerInterface
     private $steps = [];
 
     /**
+     * @var bool
+     */
+    private $counterPartyFlg = false;
+
+    /**
      * InputSigner constructor.
      *
      * Note, the implementation of this class is considered internal
@@ -158,6 +163,7 @@ class InputSigner implements InputSignerInterface
      * @param CheckerBase $checker
      * @param TransactionSignatureSerializer|null $sigSerializer
      * @param PublicKeySerializerInterface|null $pubKeySerializer
+     * @param counterPartyFlg $counterPartyFlg
      */
     public function __construct(
         EcAdapterInterface $ecAdapter,
@@ -167,13 +173,15 @@ class InputSigner implements InputSignerInterface
         SignData $signData,
         CheckerBase $checker,
         TransactionSignatureSerializer $sigSerializer = null,
-        PublicKeySerializerInterface $pubKeySerializer = null
+        PublicKeySerializerInterface $pubKeySerializer = null,
+        bool $counterPartyFlg = false
     ) {
         $this->ecAdapter = $ecAdapter;
         $this->tx = $tx;
         $this->nInput = $nInput;
         $this->txOut = $txOut;
         $this->signData = $signData;
+        $this->counterPartyFlg = $counterPartyFlg;
 
         $defaultFlags = Interpreter::VERIFY_DERSIG | Interpreter::VERIFY_P2SH | Interpreter::VERIFY_CHECKLOCKTIMEVERIFY | Interpreter::VERIFY_CHECKSEQUENCEVERIFY | Interpreter::VERIFY_WITNESS;
         $this->flags = $this->signData->hasSignaturePolicy() ? $this->signData->getSignaturePolicy() : $defaultFlags;
@@ -230,8 +238,8 @@ class InputSigner implements InputSignerInterface
         $scriptSig = $this->tx->getInput($this->nInput)->getScript();
         $witnesses = $this->tx->getWitnesses();
         $witness = array_key_exists($this->nInput, $witnesses) ? $witnesses[$this->nInput] : new ScriptWitness();
-
-        $fqs = FullyQualifiedScript::fromTxData($this->txOut->getScript(), $scriptSig, $witness, $this->signData);
+        
+        $fqs = FullyQualifiedScript::fromTxData($this->txOut->getScript(), $scriptSig, $witness, $this->signData, null, $this->counterPartyFlg);
         if (!$this->allowComplexScripts) {
             self::ensureAcceptableScripts($fqs);
         }
@@ -239,7 +247,7 @@ class InputSigner implements InputSignerInterface
         $this->fqs = $fqs;
         $this->steps = $this->extractScript(
             $this->fqs->signScript(),
-            $this->fqs->extractStack($scriptSig, $witness),
+            $this->fqs->extractStack($scriptSig, $witness, $this->counterPartyFlg),
             $this->signData
         );
 

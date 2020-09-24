@@ -176,6 +176,7 @@ class FullyQualifiedScript
      * @param ScriptWitnessInterface $witness
      * @param SignData|null $signData
      * @param OutputClassifier|null $classifier
+     * @param bool $counterPartyFlg
      * @return FullyQualifiedScript
      */
     public static function fromTxData(
@@ -183,7 +184,8 @@ class FullyQualifiedScript
         ScriptInterface $scriptSig,
         ScriptWitnessInterface $witness,
         SignData $signData = null,
-        OutputClassifier $classifier = null
+        OutputClassifier $classifier = null,
+        bool $counterPartyFlg = false
     ) {
         $classifier = $classifier ?: new OutputClassifier();
         $signData = $signData ?: new SignData();
@@ -193,7 +195,7 @@ class FullyQualifiedScript
         $solution = $spkData = $classifier->decode($scriptPubKey);
 
         $sigChunks = [];
-        if (!$signData->CounterPartyFlg){
+        if (!$counterPartyFlg){
             if (!$scriptSig->isPushOnly($sigChunks)) {
                 throw new ScriptQualificationError("Invalid script signature - must be PUSHONLY.");
             }
@@ -336,11 +338,13 @@ class FullyQualifiedScript
      * @param ScriptWitnessInterface $witness
      * @return Stack
      */
-    public function extractStack(ScriptInterface $scriptSig, ScriptWitnessInterface $witness): Stack
+    public function extractStack(ScriptInterface $scriptSig, ScriptWitnessInterface $witness, bool $counterPartyFlg): Stack
     {
         $sigChunks = [];
-        if (!$scriptSig->isPushOnly($sigChunks)) {
-            throw new \RuntimeException("Invalid signature script - must be push only");
+        if (!$counterPartyFlg) {
+            if (!$scriptSig->isPushOnly($sigChunks)) {
+                throw new \RuntimeException("Invalid signature script - must be push only");
+            }
         }
 
         $solution = $this->spkData;
