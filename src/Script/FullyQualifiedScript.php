@@ -193,7 +193,7 @@ class FullyQualifiedScript
         $solution = $spkData = $classifier->decode($scriptPubKey);
 
         $sigChunks = [];
-        if (!$signData->$CounterPartyFlg){
+        if (!$signData->CounterPartyFlg){
             if (!$scriptSig->isPushOnly($sigChunks)) {
                 throw new ScriptQualificationError("Invalid script signature - must be PUSHONLY.");
             }
